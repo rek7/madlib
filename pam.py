@@ -46,7 +46,7 @@ banner = r'''                    .___.__  ._____.
 |  Y Y  \/ __ \_/ /_/ | |  |_|  || \_\ \
 |__|_|  (____  /\____ | |____/__||___  /
       \/     \/      \/              \/
-    https://github.com/rek7'''
+    https://github.com/rek7/madlib/'''
 
 def gen_bcrypt_salt(length=10):
     return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(length))
