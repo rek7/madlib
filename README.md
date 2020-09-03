@@ -2,7 +2,8 @@
 PAM Backdoor, 
 * Logs username/passwords to file
 * Obfuscates backdoor password with bcrypt (helps make reverse engineering more difficult and string dumps less effective)
-* Automatically updates the MD5 hashes and time stomps the replaced files
+* Automatically updates the MD5 hashes, in DPKG
+* Time stomps all replaced files
 * Requires Python3
 * Replaces /bin/false, and /bin/nologin with /bin/bash (effectively making any user able to ssh in)
 * Username/passwords by default are logged to /usr/include/type.h
