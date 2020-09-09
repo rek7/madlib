@@ -30,7 +30,7 @@ root@homebase /h/r/madlib# ./pam.py "1.3.0"
 [00:15:56] [+] Finishing Extracting
 [00:15:56] [+] Added Backdoor
 [00:16:16] [+] Finished Compiling Tainted Lib
-[00:16:16] [+] Finished Successfully
+[00:16:16] [+] Finished Successfully Compiled PAM File Moved to: '/lib/x86_64-linux-gnu/security/pam_unix.so'
 ```
 
 Automatic Version Detection:
@@ -49,5 +49,5 @@ root@homebase /h/r/madlib# ./pam.py
 [00:17:56] [+] Finishing Extracting
 [00:17:56] [+] Added Backdoor
 [00:18:16] [+] Finished Compiling Tainted Lib
-[00:18:16] [+] Finished Successfully
+[00:18:16] [+] Finished Successfully Compiled PAM File Moved to: '/lib/x86_64-linux-gnu/security/pam_unix.so'
 ```
