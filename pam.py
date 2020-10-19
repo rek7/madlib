@@ -8,7 +8,6 @@ import time
 import urllib.request
 import sys
 import socket
-import platform
 import random
 import string
 import crypt
@@ -166,10 +165,15 @@ def fix_se_linux():
         fd2.close()
 
 def get_pam_version():
-    distro = platform.linux_distribution()[0].lower()
-    if distro in ["ubuntu", "debian", "mint", "kali"]:
+    try:
+        import platform
+        linux_distro = platform.linux_distribution()[0].lower()
+    except ImportError:
+        import distro
+        linux_distro = distro.like()
+    if linux_distro in ["ubuntu", "debian", "mint", "kali"]:
         return program_output("dpkg -s libpam-modules | grep -i Version | awk '{ print $2 }'").split("-")[0]
-    elif distro in ["redhat", "centos", "centos linux"]:
+    elif linux_distro in ["redhat", "centos", "centos linux"]:
         return program_output("yum list installed | grep 'pam\.*' | awk '{print $2}'").split("-")[0]
     return False
 
