@@ -168,7 +168,7 @@ def get_pam_version():
     try:
         import platform
         linux_distro = platform.linux_distribution()[0].lower()
-    except ImportError:
+    except Exception:
         import distro
         linux_distro = distro.like()
     if linux_distro in ["ubuntu", "debian", "mint", "kali"]:
