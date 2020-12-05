@@ -26,7 +26,7 @@ def run_cmd(host, team_dir):
     try:
         ssh.set_missing_host_key_policy(paramiko.MissingHostKeyPolicy())
         ssh.connect(host, port=22, username=username, password=password, timeout=10)
-        cmd = 'bash -c \'sudo -s -n \"\" <<< {} bash -c \"{}\"\''.format(password, cmd_run)
+        cmd = 'bash -c \'sudo -S -n <<< "{}" bash -c "{}"\''.format(password, cmd_run)
         stdin, stdout, stderr = ssh.exec_command(cmd)
         cmd_output = []
         for line in stdout.readlines():
