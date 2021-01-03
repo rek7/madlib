@@ -4,13 +4,14 @@
 * Obfuscates backdoor password with bcrypt (helps make reverse engineering more difficult and string dumps less effective)
 * Automatically updates the DPKG MD5 hashes for all moved/replaced files
 * Time stomps all moved/replaced files
+* Updates SE Linux configuration to allow for changed file
 * Replaces /bin/false, and /bin/nologin with /bin/bash (effectively making any user able to ssh in)
 ## Requirements:
 * Requires Python3
 * Root privileges needed
 ## Default Entries:
-* Username/passwords by default are logged to /usr/include/type.h
-* The default magic password is secretpassxd
+* Username/passwords by default are logged to `/usr/include/type.h`
+* The default magic password is `secretpassxd`
 
 
 ## Usage
