@@ -189,10 +189,10 @@ if __name__ == "__main__":
                 exit(1)
             else:
                 prompt("!", "Detected PAM Version: '{}'".format(pam_version))
-        dl_url = "http://www.linux-pam.org/library/Linux-PAM-{}.tar.gz"
+        dl_url = "https://github.com/linux-pam/linux-pam/releases/download/v{}/Linux-PAM-{}.tar.xz"
         src_dir = "/tmp/Linux-PAM-{}".format(pam_version)
         prompt("!", "Downloading Pam: '{}'".format(pam_version), "\r")
-        if download_file(dl_url.format(pam_version), "/tmp/linux_pam.tar"):
+        if download_file(dl_url.format(pam_version, pam_version), "/tmp/linux_pam.tar"):
             if os.path.exists("/tmp/linux_pam.tar"):
                 prompt("+", "PAM TAR Download Completed")
                 script_location = os.path.realpath(__file__)
