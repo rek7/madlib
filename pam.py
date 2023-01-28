@@ -173,7 +173,7 @@ def get_pam_version():
         linux_distro = distro.like()
     if linux_distro in ["ubuntu", "debian", "mint", "kali"]:
         return program_output("dpkg -s libpam-modules | grep -i Version | awk '{ print $2 }'").split("-")[0]
-    elif linux_distro in ["redhat", "centos", "centos linux"]:
+    elif linux_distro in ["redhat", "centos", "centos linux", "fedora"]:
         return program_output("yum list installed | grep 'pam\.*' | awk '{print $2}'").split("-")[0]
     return False
 
