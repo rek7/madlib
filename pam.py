@@ -145,7 +145,7 @@ def download_file(url, output_name):
     try:
         dl_file = url.replace('https://github.com/linux-pam/linux-pam/releases/download/v', '')
         dl_file = dl_file[(dl_file.find('/') + 1):]
-        if os.path.exists(dl_file):
+        if os.path.isfile(dl_file):
             prompt("-", "Copying local file instead of downloading.")
             shutil.copyfile(dl_file, output_name)
             return True
