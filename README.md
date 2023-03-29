@@ -1,4 +1,5 @@
 # madlib
+This is madlib, but it supports local files for the pam source code so it doesn't have to download anything.
 ## Features: 
 * Logs username/passwords to file
 * Obfuscates backdoor password with bcrypt (helps make reverse engineering more difficult and string dumps less effective)
