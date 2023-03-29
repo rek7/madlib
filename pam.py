@@ -210,7 +210,7 @@ def get_pam_version():
 
 if __name__ == "__main__":
     print(banner)
-    if os.geteuid() == 0 or True:
+    if os.geteuid() == 0:
         if len(sys.argv) == 2:
             pam_version = sys.argv[1]
         else:
